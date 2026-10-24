@@ -34,7 +34,7 @@ body {
 }
 
 .hero,
-.projects {
+.section {
   width: min(100%, 860px);
   margin-inline: auto;
 }
@@ -50,11 +50,45 @@ body {
   letter-spacing: -0.025em;
 }
 
+.hero__alias {
+  margin-left: 14px;
+  color: #8a948d;
+  font-size: 0.5em;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  vertical-align: 0.35em;
+}
+
 .hero__intro {
-  margin: 24px 0 36px;
+  margin: 24px 0 28px;
   color: #626c65;
   font-size: 19px;
   line-height: 1.8;
+}
+
+.hero__focus-label {
+  margin: 0 0 12px;
+  color: #17664e;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.hero__focus-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 36px;
+  padding: 0;
+  list-style: none;
+}
+
+.hero__focus-item {
+  padding: 7px 14px;
+  border: 1px solid #cfd8cd;
+  border-radius: 999px;
+  background: #fffdf8;
+  color: #4a554e;
+  font-size: 15px;
 }
 
 .hero__action {
@@ -80,15 +114,59 @@ body {
   outline-offset: 3px;
 }
 
-.projects {
+.section {
   padding-top: 40px;
   border-top: 1px solid #d5dcd3;
   scroll-margin-top: 32px;
 }
 
-.projects__title {
-  margin: 0 0 20px;
+.section__title {
+  margin: 0 0 24px;
   font-size: 18px;
+}
+
+.entries {
+  display: grid;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.entry__period {
+  margin: 0;
+  padding-top: 2px;
+  color: #8a948d;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.entry__title {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.5;
+}
+
+.entry__role {
+  margin-left: 12px;
+  color: #17664e;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.entry__detail {
+  margin: 6px 0 0;
+  color: #626c65;
+  font-size: 16px;
+  line-height: 1.8;
 }
 
 .projects__list {
@@ -121,6 +199,16 @@ body {
 @media (max-width: 600px) {
   body {
     padding: 40px 20px;
+  }
+
+  .entry {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .entry__role {
+    display: block;
+    margin-left: 0;
   }
 
   .project-card {
