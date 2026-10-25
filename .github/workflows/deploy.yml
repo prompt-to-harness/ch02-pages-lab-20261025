@@ -20,12 +20,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        # v5 起 action 自身运行在 Node 24；v4 仍是 Node 20，已被 GitHub 弃用。
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        # v5 起 action 自身运行在 Node 24；v4 仍是 Node 20，已被 GitHub 弃用。
+        uses: actions/setup-node@v5
         with:
-          # 复用仓库里 .nvmrc 固定的 Node 版本（22.19.0），不另写一份。
+          # 这里是「项目构建用的 Node」，与上面 action 自身的运行时是两回事：
+          # action 用什么运行时由 action 版本决定，工具链用哪个 Node 由这里决定。
+          # 复用仓库里 .nvmrc 固定的版本（22.19.0），不另写一份。
           node-version-file: .nvmrc
           cache: npm
 
@@ -37,7 +41,9 @@ jobs:
         run: npm run build
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        # 必须是 v5：v3 内嵌 upload-artifact@v4、v4 内嵌 upload-artifact@v4.6.2，
+        # 两者都声明 node20；v5 内嵌 upload-artifact v7.0.0，才是 node24。
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -56,4 +62,5 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        # v5.0.0 起 action 自身运行在 Node 24；page_url 输出保持不变。
+        uses: actions/deploy-pages@v5
