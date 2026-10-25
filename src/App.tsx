@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 const profile = {
   name: '缪东旭',
   alias: 'MiaoDX',
@@ -61,81 +63,166 @@ const projects = [
   },
 ]
 
+const navItems = [
+  { id: 'intro', label: '简介' },
+  { id: 'education', label: '教育' },
+  { id: 'experience', label: '工作经历' },
+  { id: 'projects', label: '项目与开源' },
+]
+
 export default function App() {
+  const [activeId, setActiveId] = useState(navItems[0].id)
+
+  useEffect(() => {
+    const updateActive = () => {
+      const marker = window.scrollY + window.innerHeight * 0.4
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2
+
+      let current = navItems[0].id
+      navItems.forEach((item) => {
+        const section = document.getElementById(item.id)
+        if (section && section.offsetTop <= marker) {
+          current = item.id
+        }
+      })
+
+      if (atBottom) {
+        current = navItems[navItems.length - 1].id
+      }
+
+      setActiveId(current)
+    }
+
+    updateActive()
+    window.addEventListener('scroll', updateActive, { passive: true })
+    window.addEventListener('resize', updateActive)
+
+    return () => {
+      window.removeEventListener('scroll', updateActive)
+      window.removeEventListener('resize', updateActive)
+    }
+  }, [])
+
   return (
-    <>
-      <header className="hero">
-        <h1 className="hero__name">
-          {profile.name}
-          <span className="hero__alias">{profile.alias}</span>
-        </h1>
-        <p className="hero__intro">{profile.intro}</p>
-        <p className="hero__focus-label">现在关注</p>
-        <ul className="hero__focus-list">
-          {profile.focus.map((item) => (
-            <li className="hero__focus-item" key={item}>
-              {item}
-            </li>
-          ))}
-        </ul>
-        <a className="hero__action" href="#experience">
-          查看经历
-        </a>
-      </header>
+    <div className="layout">
+      <aside className="sidebar">
+        <div className="sidebar__inner">
+          <nav className="sidebar__nav" aria-label="页面导航">
+            <ul className="sidebar__list">
+              {navItems.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={'#' + item.id}
+                    aria-current={activeId === item.id ? 'true' : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </aside>
 
-      <section className="section" id="education" aria-labelledby="education-title">
-        <h2 className="section__title" id="education-title">
-          教育
-        </h2>
-        <ul className="entries">
-          {education.map((item) => (
-            <li className="entry" key={`${item.period}-${item.school}`}>
-              <p className="entry__period">{item.period}</p>
-              <div className="entry__body">
-                <h3 className="entry__title">
-                  {item.school}
-                  <span className="entry__role">{item.role}</span>
-                </h3>
-                {item.detail ? <p className="entry__detail">{item.detail}</p> : null}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <main className="main">
+        <section id="intro" className="panel panel--hero" aria-labelledby="intro-title">
+          <div className="panel__inner">
+            <h1 className="hero__name" id="intro-title">
+              {profile.name}
+              <span className="hero__alias">{profile.alias}</span>
+            </h1>
+            <p className="hero__intro">{profile.intro}</p>
+            <p className="hero__focus-label">现在关注</p>
+            <ul className="hero__focus-list">
+              {profile.focus.map((item) => (
+                <li className="hero__focus-item" key={item}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <a className="button" href="#experience">
+              查看经历
+            </a>
+          </div>
+        </section>
 
-      <section className="section" id="experience" aria-labelledby="experience-title">
-        <h2 className="section__title" id="experience-title">
-          工作经历
-        </h2>
-        <ul className="entries">
-          {experience.map((item) => (
-            <li className="entry" key={`${item.period}-${item.company}`}>
-              <p className="entry__period">{item.period}</p>
-              <div className="entry__body">
-                <h3 className="entry__title">
-                  {item.company}
-                  <span className="entry__role">{item.role}</span>
-                </h3>
-                <p className="entry__detail">{item.detail}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
+        <section id="education" className="panel panel--education" aria-labelledby="education-title">
+          <div className="panel__inner">
+            <h2 className="section__title" id="education-title">
+              教育
+            </h2>
+            <ul className="entries">
+              {education.map((item) => (
+                <li className="entry" key={item.period + '-' + item.school}>
+                  <p className="entry__period">{item.period}</p>
+                  <div className="entry__body">
+                    <h3 className="entry__title">
+                      {item.school}
+                      <span className="entry__role">{item.role}</span>
+                    </h3>
+                    {item.detail ? <p className="entry__detail">{item.detail}</p> : null}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
-      <section className="section" id="projects" aria-labelledby="projects-title">
-        <h2 className="section__title" id="projects-title">
-          项目与开源
-        </h2>
-        <ul className="projects__list">
-          {projects.map((project) => (
-            <li className="project-card" key={project.name}>
-              <h3 className="project-card__name">{project.name}</h3>
-              <p className="project-card__description">{project.description}</p>
+        <section id="experience" className="panel panel--experience" aria-labelledby="experience-title">
+          <div className="panel__inner">
+            <h2 className="section__title" id="experience-title">
+              工作经历
+            </h2>
+            <ul className="entries">
+              {experience.map((item) => (
+                <li className="entry" key={item.period + '-' + item.company}>
+                  <p className="entry__period">{item.period}</p>
+                  <div className="entry__body">
+                    <h3 className="entry__title">
+                      {item.company}
+                      <span className="entry__role">{item.role}</span>
+                    </h3>
+                    <p className="entry__detail">{item.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section id="projects" className="panel panel--projects" aria-labelledby="projects-title">
+          <div className="panel__inner">
+            <h2 className="section__title" id="projects-title">
+              项目与开源
+            </h2>
+            <ul className="projects__list">
+              {projects.map((project) => (
+                <li className="project-card" key={project.name}>
+                  <h3 className="project-card__name">{project.name}</h3>
+                  <p className="project-card__description">{project.description}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </main>
+
+      <footer className="footer">
+        <div className="footer__inner">
+          <ul className="footer__menu">
+            <li>© 缪东旭</li>
+            <li>
+              风格参考{' '}
+              <a href="https://html5up.net/hyperspace" target="_blank" rel="noreferrer">
+                Hyperspace by HTML5 UP
+              </a>
+              （CCA 3.0）
             </li>
-          ))}
-        </ul>
-      </section>
-    </>
+          </ul>
+        </div>
+      </footer>
+    </div>
   )
 }
